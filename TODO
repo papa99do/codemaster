@@ -1,0 +1,29 @@
+Version 0.6.0
+To be planed
+
+Version 0.5.0
+* Search auto-completion
+* Tag suggestion when saving snippet/template
+* Search feature like angularJS doc site
+
+Version 0.4.0
+* User manual as the default code snippet
+* Support full-text search for snippets and templates
+* Support keyboard shortcut
+
+Version 0.3.0
+* Support template
+* Provide feature to customize the ace editor
+
+Version 0.2.0
+* Deploy to Heroku
+* Authentication
+
+Version 0.1.0
++ Save snippets
++ Search snippet by tag
+* Search snippet by tags
+* List tags and add link to search
+* Update an existed snippet
+* Add client side validation for saving Snippets
+* Add a flash screen to show success/failure message

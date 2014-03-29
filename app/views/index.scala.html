@@ -1,4 +1,4 @@
-@main("CtrlCP - Coding cheatsheets at your fingertip") {
+@main("Code Master - Coding cheatsheets at your fingertip") {
 
 <nav class="navbar navbar-default navbar-static-top" role="navigation">
     <div class="container-fluid">
@@ -9,16 +9,15 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Ctrl-C/V</a>
+            <a class="navbar-brand" href="#">Code Master</a>
         </div>
         <div class="collapse navbar-collapse" id="navbar-content">
-            <form class="navbar-form navbar-left" role="search" style="margin:0px;">
+            <form class="navbar-form navbar-left" role="search" style="margin:0px;" ng-submit="searchSnippets()">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search">
+                    <input type="text" class="form-control" placeholder="java, regexp, etc." ng-model="searchRequest.tag">
                 </div>
-                <button type="button" class="btn btn-default">Go</button>
+                <button type="submit" class="btn btn-primary">Go</button>
                 <button type="button" class="btn btn-default navbar-btn" data-toggle="modal" data-target="#saveSnippetModal">Save As Snippet</button>
-                <button type="button" class="btn btn-default navbar-btn" data-toggle="modal" data-target="#saveSnippetModal">Save As Template</button>
             </form>
         </div>
     </div>
@@ -63,10 +62,16 @@
     </div>
 </div>
 
+<div id="search-result">
+    <div ng-repeat="snippet in snippets">
+        <h4><a href="#" ng-click="showCode(snippet.id)">{{snippet.title}}</a></h4>
+        <p>{{snippet.description}}</p>
+        <div>
+            <span ng-repeat="tag in snippet.tags">{{tag}}</span>
+        </div>
+    </div>
+</div>
+
 <div id="editor"></div>
-
-<script>
-
-</script>
 
 }
