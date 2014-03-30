@@ -8,7 +8,8 @@ function MainCtrl($scope, $http) {
     $scope.searchRequest = {};
     $scope.view = {};
 
-    $scope.searchSnippets = function() {
+    $scope.search = function(tag) {
+        if (tag) $scope.searchRequest.tag = tag;
         $http.get('/snippets/' + $scope.searchRequest.tag).success(function(data){
             $scope.snippets = data;
         });

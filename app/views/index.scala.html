@@ -12,7 +12,7 @@
             <a class="navbar-brand" href="#">Code Master</a>
         </div>
         <div class="collapse navbar-collapse" id="navbar-content">
-            <form class="navbar-form navbar-left" role="search" style="margin:0px;" ng-submit="searchSnippets()">
+            <form class="navbar-form navbar-left" role="search" style="margin:0px;" ng-submit="search()">
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="java, regexp, etc." ng-model="searchRequest.tag">
                 </div>
@@ -67,7 +67,7 @@
         <h4><a href="#" ng-click="showCode(snippet.id)">{{snippet.title}}</a></h4>
         <p>{{snippet.description}}</p>
         <div>
-            <span ng-repeat="tag in snippet.tags">{{tag}}</span>
+            <span ng-repeat="tag in snippet.tags"><a href="#" ng-click="search(tag)">{{tag}}</a></span>
         </div>
     </div>
 </div>

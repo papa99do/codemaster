@@ -26,4 +26,9 @@ object Tags {
     }
   }
 
+  def getSnippetIdsByTag(tag: String): Set[Long] = DB.withConnection { implicit connection =>
+    SQL("select distinct snippet_id from snippet_tags st, tags t where t.id = st.tag_id and t.name = {tag}")
+      .on("tag" -> tag).as(SqlParser.long("snippet_id") *).toSet
+  }
+
 }

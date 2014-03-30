@@ -21,17 +21,30 @@ object Snippets {
     Tags.createSnippetTags(snippet.tags, snippetId.get)
   }
 
-  def search(tag: String): List[Snippet] = DB.withConnection {
+  def search(tags: String): List[Snippet] = DB.withConnection {
     implicit connection =>
-      val query = SQL( """
-        select s.id, s.title, s.description
-        from snippets s, tags t, snippet_tags st
-        where s.id = st.snippet_id
-        and st.tag_id = t.id
-        and t.name = {tag}""").on("tag" -> tag)
+
+    var ids : Set[Long] = null
+    tags.split(" ").foreach { tag =>
+      if (ids == null) {
+        ids = Tags.getSnippetIdsByTag(tag)
+      } else {
+        ids = ids & Tags.getSnippetIdsByTag(tag)
+      }
+    }
+
+    if (ids.isEmpty) return List()
+
+    val query = SQL( """
+      select s.id, s.title, s.description, group_concat(t.name) tags
+      from snippets s, tags t, snippet_tags st
+      where s.id = st.snippet_id
+      and st.tag_id = t.id
+      and s.id in (%s)
+      group by s.id""".format(ids.mkString(",")))
 
     query().map { row =>
-      Snippet(row[Long]("id"), row[String]("title"), row[String]("description"))
+      Snippet(row[Long]("id"), row[String]("title"), row[String]("description"), row[String]("tags").split(","))
     }.toList
   }
 

@@ -1,5 +1,5 @@
 Version 0.6.0
-To be planed
+Tag support as a service!
 
 Version 0.5.0
 * Search auto-completion
@@ -22,8 +22,9 @@ Version 0.2.0
 Version 0.1.0
 + Save snippets
 + Search snippet by tag
-* Search snippet by tags
-* List tags and add link to search
++ Search snippet by tags(and)
++ List tags and add link to search
 * Update an existed snippet
 * Add client side validation for saving Snippets
 * Add a flash screen to show success/failure message
+* UI improvement

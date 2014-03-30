@@ -10,6 +10,6 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 GET     /webjars/*file              controllers.WebJarAssets.at(file)
 
 # Snippet
-GET     /snippets/:tag              controllers.SnippetController.search(tag: String)
+GET     /snippets/:tags             controllers.SnippetController.search(tags: String)
 GET     /snippet/:id                controllers.SnippetController.viewCode(id: Long)
 POST    /snippet                    controllers.SnippetController.newSnippet
