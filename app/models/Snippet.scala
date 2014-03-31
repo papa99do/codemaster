@@ -21,6 +21,16 @@ object Snippets {
     Tags.createSnippetTags(snippet.tags, snippetId.get)
   }
 
+  def update(snippet: Snippet) = DB.withTransaction { implicit connection =>
+    SQL("update snippets set title = {title}, description = {description}, code = {code} where id = {id}")
+      .on("title" -> snippet.title, "description" -> snippet.description, "code" -> snippet.code, "id" -> snippet.id)
+      .executeUpdate()
+
+    Tags.deleteSnippetTags(snippet.id)
+    Tags.createSnippetTags(snippet.tags, snippet.id)
+    Tags.deleteEmptyTags()
+  }
+
   def search(tags: String): List[Snippet] = DB.withConnection {
     implicit connection =>
 

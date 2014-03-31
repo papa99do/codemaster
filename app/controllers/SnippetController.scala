@@ -22,17 +22,18 @@ object SnippetController extends Controller {
     (__ \ 'code).write[String]
   )(unlift(f = Snippet.unapply))
 
-  def newSnippet = Action(parse.json) { request =>
-
+  def save(id: Option[Long]) = Action(parse.json) { request =>
     request.body.validate[(String, String, String, String)].map {
       case (title, description, tags, code) => {
-        Snippets.create(Snippet(0L, title, description, tags.split(" "), code))
-        Ok(title)
+        id match {
+          case (Some(idValue)) => Snippets.update(Snippet(idValue, title, description, tags.split(" "), code))
+          case None => Snippets.create(Snippet(0L, title, description, tags.split(" "), code))
+        }
+        Ok(Json.obj("status" -> "ok"))
       }
     }.recoverTotal {
       e => BadRequest("Detected error:"+ JsError.toFlatJson(e))
     }
-
   }
 
   def search(tag: String) = Action {

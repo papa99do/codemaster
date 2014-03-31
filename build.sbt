@@ -10,6 +10,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "bootstrap" % "3.1.0",
   "org.webjars" % "ace" % "07.31.2013",
   "org.webjars" % "angularjs" % "1.2.14",
+  "org.webjars" % "underscorejs" % "1.6.0-1",
   "mysql" % "mysql-connector-java" % "5.1.27"
 )     
 

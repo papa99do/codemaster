@@ -24,7 +24,7 @@ Version 0.1.0
 + Search snippet by tag
 + Search snippet by tags(and)
 + List tags and add link to search
-* Update an existed snippet
++ Update an existed snippet
 * Add client side validation for saving Snippets
 * Add a flash screen to show success/failure message
 * UI improvement

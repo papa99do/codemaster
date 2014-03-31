@@ -12,19 +12,33 @@
             <a class="navbar-brand" href="#">Code Master</a>
         </div>
         <div class="collapse navbar-collapse" id="navbar-content">
-            <form class="navbar-form navbar-left" role="search" style="margin:0px;" ng-submit="search()">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="java, regexp, etc." ng-model="searchRequest.tag">
-                </div>
-                <button type="submit" class="btn btn-primary">Go</button>
-                <button type="button" class="btn btn-default navbar-btn" data-toggle="modal" data-target="#saveSnippetModal">Save As Snippet</button>
-            </form>
+            <ul class="nav navbar-nav">
+                <li>
+                    <form class="navbar-form" role="search" ng-submit="search()">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="java, regexp, etc." ng-model="searchRequest.tag">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Go</button>
+                    </form>
+                </li>
+                <li>
+                    <div class="button-group navbar-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            Save <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#" data-toggle="modal" data-target="#saveSnippetModal" ng-click="newSnippet()">New Snippet</a></li>
+                            <li><a href="#" data-toggle="modal" data-target="#saveSnippetModal" ng-click="updateSnippet()" ng-show="selectedSnippetId">Update Snippet</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>
 
 <!-- Modal -->
-<div class="modal fade" id="saveSnippetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" ng-controller="SaveSnippetCtrl">
+<div class="modal fade" id="saveSnippetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -57,14 +71,13 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" ng-click="saveSnippet()">Save</button>
             </div>
-            <pre>{{request | json}}</pre>
         </div>
     </div>
 </div>
 
 <div id="search-result">
     <div ng-repeat="snippet in snippets">
-        <h4><a href="#" ng-click="showCode(snippet.id)">{{snippet.title}}</a></h4>
+        <h4><a href="#" ng-click="selected(snippet.id)">{{snippet.title}}</a></h4>
         <p>{{snippet.description}}</p>
         <div>
             <span ng-repeat="tag in snippet.tags"><a href="#" ng-click="search(tag)">{{tag}}</a></span>
