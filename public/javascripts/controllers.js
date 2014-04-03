@@ -12,7 +12,12 @@ function MainCtrl($scope, $http) {
 
         if (tag) $scope.searchRequest.tag = tag;
         $http.get('/snippets/' + $scope.searchRequest.tag).success(function(data){
-            $scope.snippets = data;
+            if (data && data[0]) {
+                $scope.snippets = data;
+                $scope.selected(data[0].id);
+            } else {
+                $scope.editor.setValue('');
+            }
         });
     };
 
@@ -26,8 +31,11 @@ function MainCtrl($scope, $http) {
     $scope.saveSnippet = function() {
         var url = $scope.snippet.id ? '/snippet?id=' + $scope.snippet.id : '/snippet'
         $http.post(url, $scope.snippet).success(function(data) {
-            $('#saveSnippetModal').modal('hide');
-            // TODO show flash message for successful request
+            $('#save-snippet-modal').modal('hide');
+            newAlert('success', 'Snippet saved successfully!');
+        }).error(function(data) {
+            $('#save-snippet-modal').modal('hide');
+            newAlert('danger', 'Some error occurred! Please try again later.');
         });
     };
 
@@ -45,4 +53,9 @@ function MainCtrl($scope, $http) {
         }
         $scope.snippet.code = $scope.editor.getValue();
     };
+}
+
+function newAlert(type, message) {
+    $("#alert-area").append($("<div class='alert alert-" + type + " fade in' data-alert><p> " + message + " </p></div>"));
+    $(".alert").delay(2000).fadeOut("slow", function () { $(this).remove(); });
 }

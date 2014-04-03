@@ -14,3 +14,13 @@
     width: 300px;
     overflow: scroll;
 }
+
+#alert-area {
+    position: fixed;
+    z-index: 2000;
+    display: block;
+    top: 100px;
+    width: 300px;
+    left: 50%;
+    margin-left:-150px;
+}

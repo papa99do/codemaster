@@ -27,6 +27,6 @@ Version 0.1.0
 + List tags and add link to search
 + Update an existed snippet
 + Add client side validation for saving Snippets
-* Add a flash screen to show success/failure message
-* UI improvement
++ Add a flash screen to show success/failure message
+* UI improvement!
 * Bug: make the code unselected after put it in editor

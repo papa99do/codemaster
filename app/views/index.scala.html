@@ -27,8 +27,8 @@
                             Save <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="#" data-toggle="modal" data-target="#saveSnippetModal" ng-click="newSnippet()">New Snippet</a></li>
-                            <li><a href="#" data-toggle="modal" data-target="#saveSnippetModal" ng-click="updateSnippet()" ng-show="selectedSnippetId">Update Snippet</a></li>
+                            <li><a href="#" data-toggle="modal" data-target="#save-snippet-modal" ng-click="newSnippet()">New Snippet</a></li>
+                            <li><a href="#" data-toggle="modal" data-target="#save-snippet-modal" ng-click="updateSnippet()" ng-show="selectedSnippetId">Update Snippet</a></li>
                         </ul>
                     </div>
                 </li>
@@ -38,7 +38,7 @@
 </nav>
 
 <!-- Modal -->
-<div class="modal fade" id="saveSnippetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="save-snippet-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -92,7 +92,12 @@
             <span ng-repeat="tag in snippet.tags"><a href="#" ng-click="search(tag)">{{tag}}</a></span>
         </div>
     </div>
+    <div ng-show="snippets.length === 0">
+        <h4>No snippet found</h4>
+    </div>
 </div>
+
+<div id="alert-area"></div>
 
 <div id="editor"></div>
 
