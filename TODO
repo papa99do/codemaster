@@ -16,6 +16,7 @@ Version 0.3.0
 * Provide feature to customize the ace editor
 
 Version 0.2.0
+* Create a new project on github
 * Deploy to Heroku
 * Authentication
 
@@ -25,6 +26,7 @@ Version 0.1.0
 + Search snippet by tags(and)
 + List tags and add link to search
 + Update an existed snippet
-* Add client side validation for saving Snippets
++ Add client side validation for saving Snippets
 * Add a flash screen to show success/failure message
 * UI improvement
+* Bug: make the code unselected after put it in editor

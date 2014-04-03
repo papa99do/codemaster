@@ -24,7 +24,6 @@ function MainCtrl($scope, $http) {
     };
 
     $scope.saveSnippet = function() {
-        $scope.snippet.code = $scope.editor.getValue();
         var url = $scope.snippet.id ? '/snippet?id=' + $scope.snippet.id : '/snippet'
         $http.post(url, $scope.snippet).success(function(data) {
             $('#saveSnippetModal').modal('hide');
@@ -33,7 +32,7 @@ function MainCtrl($scope, $http) {
     };
 
     $scope.newSnippet = function() {
-        $scope.snippet = {};
+        $scope.snippet = {code : $scope.editor.getValue()};
     };
 
     $scope.updateSnippet = function() {
@@ -44,5 +43,6 @@ function MainCtrl($scope, $http) {
         } else {
             $scope.snippet = {};
         }
+        $scope.snippet.code = $scope.editor.getValue();
     };
 }
