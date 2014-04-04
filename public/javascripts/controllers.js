@@ -1,4 +1,4 @@
-function MainCtrl($scope, $http) {
+function MainCtrl($scope, $http, $timeout) {
     $scope.editor = ace.edit("editor");
     $scope.editor.setTheme("ace/theme/chrome");
     $scope.editor.getSession().setMode("ace/mode/java");
@@ -24,7 +24,7 @@ function MainCtrl($scope, $http) {
     $scope.selected = function(snippetId) {
         $scope.selectedSnippetId = snippetId;
         $http.get('/snippet/' + snippetId).success(function(data){
-            $scope.editor.setValue(data);
+            $scope.editor.setValue(data, -1);
         });
     };
 

@@ -12,6 +12,7 @@ Version 0.4.0
 * Support keyboard shortcut
 
 Version 0.3.0
+* automatically set editor mode
 * Support template
 * Provide feature to customize the ace editor
 
@@ -28,5 +29,5 @@ Version 0.1.0
 + Update an existed snippet
 + Add client side validation for saving Snippets
 + Add a flash screen to show success/failure message
-* UI improvement!
-* Bug: make the code unselected after put it in editor
++ Bug: make the code unselected after put it in editor
++ UI improvement!

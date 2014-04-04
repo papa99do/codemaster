@@ -85,12 +85,14 @@
 </div>
 
 <div id="search-result">
-    <div ng-repeat="snippet in snippets">
-        <h4><a href="#" ng-click="selected(snippet.id)">{{snippet.title}}</a></h4>
-        <p>{{snippet.description}}</p>
-        <div>
-            <span ng-repeat="tag in snippet.tags"><a href="#" ng-click="search(tag)">{{tag}}</a></span>
-        </div>
+    <div class="list-group">
+        <a href="#" class="list-group-item" ng-repeat="snippet in snippets"
+           ng-class="{'active': selectedSnippetId === snippet.id}" ng-click="selected(snippet.id)">
+            <h4 class="list-group-item-heading">{{snippet.title}}</h4>
+            <span class="list-group-item-text"><small>{{snippet.description}}</small></span>
+            <br/>
+            <span ng-repeat="tag in snippet.tags" class="tag" ng-click="search(tag)">{{tag}}</span>
+        </a>
     </div>
     <div ng-show="snippets.length === 0">
         <h4>No snippet found</h4>
