@@ -1,25 +1,21 @@
-Version 0.6.0
-Tag support as a service!
-
 Version 0.5.0
+Tag support as a service!
+Authentication
+
+Version 0.4.0
 * Search auto-completion
 * Tag suggestion when saving snippet/template
 * Search feature like angularJS doc site
 
-Version 0.4.0
+Version 0.3.0
 * User manual as the default code snippet
 * Support full-text search for snippets and templates
-* Support keyboard shortcut
-
-Version 0.3.0
-* automatically set editor mode
-* Support template
-* Provide feature to customize the ace editor
+* Support keyboard shortcuts
 
 Version 0.2.0
-* Create a new project on github
-* Deploy to Heroku
-* Authentication
+* automatically set editor mode
+* Provide feature to customize the ace editor
+* Support template
 
 Version 0.1.0
 + Save snippets
@@ -31,3 +27,5 @@ Version 0.1.0
 + Add a flash screen to show success/failure message
 + Bug: make the code unselected after put it in editor
 + UI improvement!
++ Create a new project on github: https://github.com/papa99do/codemaster
+- Deploy to Heroku
