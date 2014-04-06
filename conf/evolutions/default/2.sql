@@ -1,13 +1,13 @@
 # --- !Ups
 
 create table tags (
-    id bigint auto_increment primary key,
+    id serial primary key,
     name varchar(100)
 );
 
 create table snippet_tags (
-    snippet_id bigint,
-    tag_id bigint,
+    snippet_id integer,
+    tag_id integer,
     primary key (snippet_id, tag_id)
 );
 
