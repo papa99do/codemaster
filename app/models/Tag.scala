@@ -32,7 +32,7 @@ object Tags {
     SQL("select id from tags where name = {tag}")
       .on("tag" -> tag.toLowerCase()).as(SqlParser.scalar[Long].singleOpt) match {
       case Some(id: Long) => Some(id)
-      case None => SQL("insert into tags(name) value({name})").on("name" -> tag).executeInsert()
+      case None => SQL("insert into tags(name) values({name})").on("name" -> tag).executeInsert()
     }
   }
 

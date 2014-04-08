@@ -87,7 +87,7 @@
 <div id="search-result">
     <div class="list-group">
         <a href="#" class="list-group-item" ng-repeat="snippet in snippets"
-           ng-class="{'active': selectedSnippetId === snippet.id}" ng-click="selected(snippet.id)">
+           ng-class="{'active': selectedSnippetId === snippet.id}" ng-click="select(snippet.id)">
             <h4 class="list-group-item-heading">{{snippet.title}}</h4>
             <span class="list-group-item-text"><small>{{snippet.description}}</small></span>
             <br/>

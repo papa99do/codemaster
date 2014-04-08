@@ -9,7 +9,7 @@ object SnippetController extends Controller {
 
   implicit val rds = (
     (__ \ 'title).read[String] and
-    (__ \ 'description).read[String] and
+    (__ \ 'description).readNullable[String] and
     (__ \ 'tags).read[String] and
     (__ \ 'code).read[String]
   ).tupled
@@ -17,13 +17,14 @@ object SnippetController extends Controller {
   implicit val snippetWrites : Writes[Snippet] = (
     (__ \ 'id).write[Long] and
     (__ \ 'title).write[String] and
-    (__ \ 'description).write[String] and
+    (__ \ 'description).write[Option[String]] and
     (__ \ 'tags).write[Seq[String]] and
-    (__ \ 'code).write[String]
+    (__ \ 'code).write[String] and
+    (__ \ 'langMode).write[String]
   )(unlift(f = Snippet.unapply))
 
   def save(id: Option[Long]) = Action(parse.json) { request =>
-    request.body.validate[(String, String, String, String)].map {
+    request.body.validate[(String, Option[String], String, String)].map {
       case (title, description, tags, code) => {
         id match {
           case (Some(idValue)) => Snippets.update(Snippet(idValue, title, description, tags.split(" "), code))
@@ -36,8 +37,8 @@ object SnippetController extends Controller {
     }
   }
 
-  def search(tag: String) = Action {
-    Ok(Json.toJson(Snippets.search(tag)))
+  def search(tags: String) = Action {
+    Ok(Json.toJson(Snippets.search(tags)))
   }
 
   def viewCode(id: Long) = Action {

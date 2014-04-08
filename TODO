@@ -13,7 +13,7 @@ Version 0.3.0
 * Support keyboard shortcuts
 
 Version 0.2.0
-* automatically set editor mode
++ automatically set editor mode
 * Provide feature to customize the ace editor
 * Support template
 
@@ -28,4 +28,5 @@ Version 0.1.0
 + Bug: make the code unselected after put it in editor
 + UI improvement!
 + Create a new project on github: https://github.com/papa99do/codemaster
-- Deploy to Heroku
++ Deploy to Heroku: http://code-master.herokuapp.com/
+* Setup domain name code.papa99do.com for code-master.herokuapp.com

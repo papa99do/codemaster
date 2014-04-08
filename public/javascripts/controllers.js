@@ -1,7 +1,7 @@
 function MainCtrl($scope, $http, $timeout) {
     $scope.editor = ace.edit("editor");
     $scope.editor.setTheme("ace/theme/chrome");
-    $scope.editor.getSession().setMode("ace/mode/java");
+    $scope.editor.getSession().setMode("ace/mode/text");
 
     $scope.searchRequest = {};
     $scope.view = {};
@@ -14,16 +14,18 @@ function MainCtrl($scope, $http, $timeout) {
         $http.get('/snippets/' + $scope.searchRequest.tag).success(function(data){
             if (data && data[0]) {
                 $scope.snippets = data;
-                $scope.selected(data[0].id);
+                $scope.select(data[0].id);
             } else {
+                $scope.editor.getSession().setMode("ace/mode/text");
                 $scope.editor.setValue('');
             }
         });
     };
 
-    $scope.selected = function(snippetId) {
+    $scope.select = function(snippetId) {
         $scope.selectedSnippetId = snippetId;
         $http.get('/snippet/' + snippetId).success(function(data){
+            $scope.editor.getSession().setMode('ace/mode/' + $scope.selectedSnippet().langMode);
             $scope.editor.setValue(data, -1);
         });
     };
@@ -44,7 +46,7 @@ function MainCtrl($scope, $http, $timeout) {
     };
 
     $scope.updateSnippet = function() {
-        var selectedSnippet = _.find($scope.snippets, function(s){return s.id === $scope.selectedSnippetId;});
+        var selectedSnippet = $scope.selectedSnippet();
         if (selectedSnippet) {
             $scope.snippet = angular.copy(selectedSnippet);
             $scope.snippet.tags = $scope.snippet.tags.join(' ');
@@ -52,6 +54,10 @@ function MainCtrl($scope, $http, $timeout) {
             $scope.snippet = {};
         }
         $scope.snippet.code = $scope.editor.getValue();
+    };
+
+    $scope.selectedSnippet = function() {
+        return _.find($scope.snippets, function(s){return s.id === $scope.selectedSnippetId;});
     };
 }
 

@@ -7,9 +7,10 @@ import anorm._
 case class Snippet (
   id: Long,
   title: String,
-  description: String,
+  description: Option[String],
   tags: Seq[String] = Nil,
-  code: String = ""
+  code: String = "",
+  langMode: String = ""
 )
 
 object Snippets {
@@ -46,7 +47,7 @@ object Snippets {
     if (ids.isEmpty) return List()
 
     val query = SQL( """
-      select s.id, s.title, s.description, group_concat(t.name) tags
+      select s.id, s.title, s.description, string_agg(t.name, ',') tags
       from snippets s, tags t, snippet_tags st
       where s.id = st.snippet_id
       and st.tag_id = t.id
@@ -54,8 +55,14 @@ object Snippets {
       group by s.id""".format(ids.mkString(",")))
 
     query().map { row =>
-      Snippet(row[Long]("id"), row[String]("title"), row[String]("description"), row[String]("tags").split(","))
+      val tags = row[String]("tags").split(",")
+      Snippet(id = row[Long]("id"),
+        title = row[String]("title"),
+        description = row[Option[String]]("description"),
+        tags = tags,
+        langMode = AceHelper.guessLangMode(tags))
     }.toList
+
   }
 
   def getCode(id: Long): String = DB.withConnection { implicit connection =>
