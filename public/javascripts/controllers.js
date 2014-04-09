@@ -1,10 +1,16 @@
 function MainCtrl($scope, $http, $timeout) {
-    $scope.editor = ace.edit("editor");
-    $scope.editor.setTheme("ace/theme/chrome");
-    $scope.editor.getSession().setMode("ace/mode/text");
 
     $scope.searchRequest = {};
     $scope.view = {};
+    $scope.langMode = {};
+
+    $scope.editor = ace.edit("editor");
+    $scope.editor.setTheme("ace/theme/chrome");
+
+    $http.get('/langmodes').success(function(data) {
+        $scope.langMode.all = data;
+        $scope.setLangMode();
+    });
 
     $scope.search = function(tag) {
         $scope.snippets = [];
@@ -16,7 +22,7 @@ function MainCtrl($scope, $http, $timeout) {
                 $scope.snippets = data;
                 $scope.select(data[0].id);
             } else {
-                $scope.editor.getSession().setMode("ace/mode/text");
+                $scope.setLangMode();
                 $scope.editor.setValue('');
             }
         });
@@ -25,7 +31,7 @@ function MainCtrl($scope, $http, $timeout) {
     $scope.select = function(snippetId) {
         $scope.selectedSnippetId = snippetId;
         $http.get('/snippet/' + snippetId).success(function(data){
-            $scope.editor.getSession().setMode('ace/mode/' + $scope.selectedSnippet().langMode);
+            $scope.setLangMode($scope.selectedSnippet().langMode);
             $scope.editor.setValue(data, -1);
         });
     };
@@ -59,7 +65,15 @@ function MainCtrl($scope, $http, $timeout) {
     $scope.selectedSnippet = function() {
         return _.find($scope.snippets, function(s){return s.id === $scope.selectedSnippetId;});
     };
+
+    $scope.setLangMode = function (mode) {
+        mode = mode || $scope.langMode.selected || 'text';
+        $scope.editor.getSession().setMode('ace/mode/' + mode);
+        $scope.langMode.selected = mode;
+    };
 }
+
+
 
 function newAlert(type, message) {
     $("#alert-area").append($("<div class='alert alert-" + type + " fade in' data-alert><p> " + message + " </p></div>"));

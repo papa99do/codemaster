@@ -32,6 +32,11 @@
                         </ul>
                     </div>
                 </li>
+                <li>
+                    <select ng-model="langMode.selected" ng-options="mode for mode in langMode.all"
+                            ng-change="setLangMode()" class="form-control navbar-btn" style="margin-left: 10px;"></select>
+
+                </li>
             </ul>
         </div>
     </div>
