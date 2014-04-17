@@ -46,6 +46,12 @@ function MainCtrl($scope, $http, $timeout) {
         });
     };
 
+    $scope.deleteSnippet = function(snippetId) {
+        $http.delete('/snippet/' + snippetId).success(function(){
+            $scope.search();
+        });
+    }
+
     $scope.newSnippet = function() {
         $scope.snippet = {code : $scope.editor.getValue()};
     };
@@ -70,7 +76,7 @@ function MainCtrl($scope, $http, $timeout) {
         $scope.editor.session.setMode('ace/mode/' + mode);
         $scope.langMode.selected = mode;
 
-        if ($scope.snippetManager) {
+        if ($scope.snippetManager && mode !== 'text') {
             if ($scope.snippetManager.snippetMap[mode]) {
                 console.log("Templates loaded for mode: ", mode);
                 $scope.templates = $scope.snippetManager.snippetMap[mode];

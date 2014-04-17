@@ -6,7 +6,7 @@ object AceHelper {
     "powershell","mysql","text","tcl","c9search","c_cpp","jsx","rdoc","typescript","csharp",
     "coffee","livescript","batchfile","ocaml","curly","rhtml","objectivec","diff","verilog",
     "xquery","ada","r","golang","snippets","haxe","dart","svg","lsl","jade","properties","ejs",
-    "erlang","markdown","perl","tmsnippet","sh","tex","twig","mushcode_high_rules","makefile",
+    "erlang","markdown","perl","tmsnippet","sh","tex","twig","makefile",
     "pascal","dot","d","coldfusion","cobol","actionscript","php","assembly_x86","groovy","jsp",
     "latex","asciidoc","scss","ftl","python","textile","ruby","jsoniq","julia","yaml","glsl",
     "rust","prolog","logiql","scheme","abap","autohotkey","mushcode","lucene","stylus","scala",

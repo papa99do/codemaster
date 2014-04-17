@@ -135,24 +135,27 @@
     </div>
 </div>
 
-<div id="search-result">
-    <div class="list-group">
-        <a href="#" class="list-group-item" ng-repeat="snippet in snippets"
-           ng-class="{'active': selectedSnippetId === snippet.id}" ng-click="select(snippet.id)">
-            <h4 class="list-group-item-heading">{{snippet.title}}</h4>
-            <span class="list-group-item-text"><small>{{snippet.description}}</small></span>
-            <br/>
-            <span ng-repeat="tag in snippet.tags" class="tag" ng-click="search(tag)">{{tag}}</span>
-        </a>
-    </div>
-    <div ng-show="snippets.length === 0">
+<div id="snippet-list">
+    <ul class="list-group">
+        <li class="list-group-item" ng-repeat="snippet in snippets"
+           ng-class="{'list-group-item-success': selectedSnippetId === snippet.id}">
+            <button type="button" class="close" ng-click="deleteSnippet(snippet.id)">&times;</button>
+            <a href="#" ng-click="select(snippet.id)"><h4 class="list-group-item-heading">{{snippet.title}}</h4></a>
+            <div class="list-group-item-text"><small>{{snippet.description}}</small></div>
+            <div>
+                <span ng-repeat="tag in snippet.tags" class="tag" ng-click="search(tag)">{{tag}}</span>
+            </div>
+        </li>
+    </ul>
+    <div ng-cloak ng-show="snippets.length === 0">
         <h4>No snippet found</h4>
     </div>
-    <div>
-        <ul>
-            <li ng-repeat="template in templates">{{template.tabTrigger}}: {{template.name}}</li>
-        </ul>
-    </div>
+</div>
+
+<div id="template-list">
+    <ul class="list-group">
+        <li class="list-group-item" ng-repeat="template in templates">{{template.tabTrigger}}</li>
+    </ul>
 </div>
 
 <div id="alert-area"></div>

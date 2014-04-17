@@ -13,6 +13,7 @@ GET     /webjars/*file              controllers.WebJarAssets.at(file)
 GET     /snippets/:tags             controllers.SnippetController.search(tags: String)
 GET     /snippet/:id                controllers.SnippetController.viewCode(id: Long)
 POST    /snippet                    controllers.SnippetController.save(id: Option[Long])
+DELETE  /snippet/:id                controllers.SnippetController.delete(id: Long)
 
 # ACE
 GET     /langmodes                  controllers.AceController.getAvailableLangModes

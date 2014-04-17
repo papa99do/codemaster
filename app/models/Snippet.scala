@@ -32,6 +32,12 @@ object Snippets {
     Tags.deleteEmptyTags()
   }
 
+  def delete(id: Long) = DB.withTransaction { implicit connection =>
+    Tags.deleteSnippetTags(id)
+    SQL("delete from snippets where id = {id}").on("id" -> id).executeUpdate()
+    Tags.deleteEmptyTags()
+  }
+
   def search(tags: String): List[Snippet] = DB.withConnection {
     implicit connection =>
 

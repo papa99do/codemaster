@@ -37,6 +37,11 @@ object SnippetController extends Controller {
     }
   }
 
+  def delete(id: Long) = Action {
+    Snippets.delete(id)
+    Ok(Json.obj("status" -> "ok"))
+  }
+
   def search(tags: String) = Action {
     Ok(Json.toJson(Snippets.search(tags)))
   }

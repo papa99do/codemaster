@@ -1,18 +1,33 @@
 #editor {
     position: absolute;
     top: 50px;
-    right: 300px;
+    right: 150px;
     bottom: 0;
-    left: 0;
+    left: 300px;
 }
 
-#search-result {
+#snippet-list {
     position: absolute;
     top: 50px;
-    right: 0;
+    left: 0;
     bottom: 0;
     width: 300px;
     overflow: scroll;
+}
+
+#template-list {
+    position: absolute;
+    top: 50px;
+    bottom: 0;
+    right: 0;
+    width: 150px;
+    overflow: scroll;
+}
+
+#template-list .list-group-item {
+    padding: 3px 15px;
+    color: #31708f;
+    background-color: #d9edf7;
 }
 
 #alert-area {
