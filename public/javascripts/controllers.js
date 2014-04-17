@@ -1,11 +1,9 @@
 function MainCtrl($scope, $http, $timeout) {
 
     $scope.searchRequest = {};
-    $scope.view = {};
     $scope.langMode = {};
 
-    $scope.editor = ace.edit("editor");
-    $scope.editor.setTheme("ace/theme/chrome");
+    initEditor();
 
     $http.get('/langmodes').success(function(data) {
         $scope.langMode.all = data;
@@ -17,6 +15,7 @@ function MainCtrl($scope, $http, $timeout) {
         $scope.selectedSnippetId = null;
 
         if (tag) $scope.searchRequest.tag = tag;
+
         $http.get('/snippets/' + $scope.searchRequest.tag).success(function(data){
             if (data && data[0]) {
                 $scope.snippets = data;
@@ -68,14 +67,60 @@ function MainCtrl($scope, $http, $timeout) {
 
     $scope.setLangMode = function (mode) {
         mode = mode || $scope.langMode.selected || 'text';
-        $scope.editor.getSession().setMode('ace/mode/' + mode);
+        $scope.editor.session.setMode('ace/mode/' + mode);
         $scope.langMode.selected = mode;
+
+        if ($scope.snippetManager) {
+            if ($scope.snippetManager.snippetMap[mode]) {
+                console.log("Templates loaded for mode: ", mode);
+                $scope.templates = $scope.snippetManager.snippetMap[mode];
+            } else {
+                populateSnippets(mode, 100);
+            }
+        }
+
     };
-}
+
+    function populateSnippets(mode, dueTime) {
+        console.log("Retry loading templates for mode: ", mode, " in ", dueTime, " ms.");
+        $timeout(function() {
+            if ($scope.snippetManager.snippetMap[mode]) {
+                console.log("Templates loaded for mode: ", mode);
+                $scope.templates = $scope.snippetManager.snippetMap[mode];
+            } else {
+                populateSnippets(mode, dueTime * 2);
+            }
+        }, dueTime);
+    }
 
 
+    function initEditor() {
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/chrome");
+        editor.session.setUseWrapMode(true);
+        editor.session.setWrapLimitRange(null, null);
+        editor.setBehavioursEnabled(true);//auto pairing of quotes & brackets
+        editor.setShowPrintMargin(false);
+        editor.session.setUseSoftTabs(true);//use soft tabs (likely the default)
 
-function newAlert(type, message) {
-    $("#alert-area").append($("<div class='alert alert-" + type + " fade in' data-alert><p> " + message + " </p></div>"));
-    $(".alert").delay(2000).fadeOut("slow", function () { $(this).remove(); });
+        //Include auto complete- Only for Template Editor page
+        ace.config.loadModule('ace/ext/language_tools', function () {
+            editor.setOptions({
+                enableBasicAutocompletion: true,
+                enableSnippets: true
+            });
+
+            $scope.snippetManager = ace.require("ace/snippets").snippetManager;
+
+            //$scope.snippetManager.register([], 'java');
+
+        });
+
+        $scope.editor = editor;
+    }
+
+    function newAlert(type, message) {
+        $("#alert-area").append($("<div class='alert alert-" + type + " fade in' data-alert><p> " + message + " </p></div>"));
+        $(".alert").delay(2000).fadeOut("slow", function () { $(this).remove(); });
+    }
 }

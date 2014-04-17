@@ -13,10 +13,13 @@ Version 0.3.0
 * Support keyboard shortcuts
 
 Version 0.2.0
-+ automatically set editor mode based on guessing language mode for snippets
-+ selectable language mode
++ Automatically set editor mode based on guessing language mode for snippets
++ Selectable language mode
+* Delete snippets
 * Support template
 * Provide feature to customize the ace editor
+* Server-side tests
+* Client-side tests
 
 Version 0.1.0
 + Save snippets
