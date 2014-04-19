@@ -91,6 +91,13 @@ function MainCtrl($scope, $http, $timeout) {
         $scope.editor.session.setMode('ace/mode/' + mode);
         $scope.langMode.selected = mode;
 
+        $http.get('/templates/' + mode).success(function(data) {
+            if (data && data.length > 0 && $scope.snippetManager) {
+                $scope.snippetManager.register(data, mode);
+                populateSnippets(mode, 200);
+            }
+        });
+
         if ($scope.snippetManager && mode !== 'text') {
             if ($scope.snippetManager.snippetMap[mode]) {
                 console.log("Templates loaded for mode: ", mode);

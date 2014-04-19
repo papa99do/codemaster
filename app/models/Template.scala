@@ -22,4 +22,12 @@ object Templates {
       ).executeInsert()
   }
 
+  def searchByMode(mode: String) : List[Template] = DB.withConnection { implicit connection =>
+    SQL("select id, name, tab_trigger, content, mode from templates where mode = {mode}")
+      .on("mode" -> mode)().map { row =>
+      Template(row[Long]("id"), row[String]("name"), row[String]("tab_trigger"),
+        row[String]("content"), row[String]("mode"))
+    }.toList
+  }
+
 }

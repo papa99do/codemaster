@@ -14,6 +14,14 @@ object TemplateController extends Controller {
     (__ \ 'mode).read[String]
   ).tupled
 
+  implicit val writes : Writes[Template] = (
+    (__ \ 'id).write[Long] and
+    (__ \ 'name).write[String] and
+    (__ \ 'tabTrigger).write[String] and
+    (__ \ 'content).write[String] and
+    (__ \ 'mode).write[String]
+  )(unlift(f = Template.unapply))
+
   def save(id: Option[Long]) = Action(parse.json) { request =>
     request.body.validate[(String, String, String, String)].map {
       case (name, tabTrigger, content, mode) => {
@@ -24,5 +32,11 @@ object TemplateController extends Controller {
       e => BadRequest("Detected error:"+ JsError.toFlatJson(e))
     }
   }
+
+  def load(mode: String) = Action {
+    Ok(Json.toJson(Templates.searchByMode(mode)))
+  }
+
+
 
 }

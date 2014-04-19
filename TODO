@@ -17,9 +17,10 @@ Version 0.2.0
 + Automatically set editor mode based on guessing language mode for snippets
 + Selectable language mode
 + Delete snippets
-* Save new template
-* Update template
++ Save new template
++ Load custom templates
 * Load custom templates after a certain date
+* Update template
 * Emit event after loading default/custom template
 * Templates filtering while typing
 * Templates ordering

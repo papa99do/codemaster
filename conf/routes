@@ -16,6 +16,7 @@ POST    /snippet                    controllers.SnippetController.save(id: Optio
 DELETE  /snippet/:id                controllers.SnippetController.delete(id: Long)
 
 # Template
+GET     /templates/:mode            controllers.TemplateController.load(mode: String)
 POST    /template                   controllers.TemplateController.save(id: Option[Long])
 
 # ACE
