@@ -15,5 +15,8 @@ GET     /snippet/:id                controllers.SnippetController.viewCode(id: L
 POST    /snippet                    controllers.SnippetController.save(id: Option[Long])
 DELETE  /snippet/:id                controllers.SnippetController.delete(id: Long)
 
+# Template
+POST    /template                   controllers.TemplateController.save(id: Option[Long])
+
 # ACE
 GET     /langmodes                  controllers.AceController.getAvailableLangModes

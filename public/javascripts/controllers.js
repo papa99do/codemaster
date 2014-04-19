@@ -75,6 +75,17 @@ function MainCtrl($scope, $http, $timeout) {
         $scope.template = {mode: $scope.langMode.selected};
     }
 
+    $scope.saveTemplate = function() {
+        var url = $scope.template.id ? '/template?id=' + $scope.template.id : '/template'
+        $http.post(url, $scope.template).success(function(data) {
+            $('#save-template-modal').modal('hide');
+            newAlert('success', 'Template saved successfully!');
+        }).error(function(data) {
+            $('#save-template-modal').modal('hide');
+            newAlert('danger', 'Some error occurred! Please try again later.');
+        });
+    };
+
     $scope.setLangMode = function (mode) {
         mode = mode || $scope.langMode.selected || 'text';
         $scope.editor.session.setMode('ace/mode/' + mode);
