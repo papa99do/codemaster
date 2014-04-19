@@ -73,7 +73,20 @@ function MainCtrl($scope, $http, $timeout, $filter) {
 
     $scope.newTemplate = function() {
         $scope.template = {mode: $scope.langMode.selected};
-    }
+    };
+
+    $scope.updateTemplate = function(template) {
+        $scope.template = angular.copy(template);
+        $scope.template.mode = $scope.langMode.selected;
+        $('#save-template-modal').modal();
+    };
+
+    $scope.deleteTemplate = function(template) {
+        $http.delete('/template/' + template.id).success(function(){
+            $scope.snippetManager.unregister(template, template.mode);
+            populateSnippets(template.mode, 100);
+        });
+    };
 
     $scope.saveTemplate = function() {
         var url = $scope.template.id ? '/template?id=' + $scope.template.id : '/template';

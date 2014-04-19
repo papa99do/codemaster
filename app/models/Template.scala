@@ -22,6 +22,14 @@ object Templates {
       ).executeInsert()
   }
 
+  def update(template: Template) = DB.withConnection { implicit connection =>
+    SQL("update templates set name = {name}, tab_trigger = {tabTrigger}, content = {content}, " +
+      "mode = {mode}, last_updated_on = now() where id = {id} ").on(
+        "name" -> template.name, "tabTrigger" ->  template.tabTrigger,
+        "content" -> template.content, "mode" -> template.mode, "id" -> template.id
+      ).executeUpdate()
+  }
+
   def searchByMode(mode: String, after: Option[String]) : List[Template] = DB.withConnection { implicit connection =>
     val sql = after match {
       case Some(date: String) =>
@@ -37,6 +45,10 @@ object Templates {
       Template(row[Long]("id"), row[String]("name"), row[String]("tab_trigger"),
         row[String]("content"), row[String]("mode"))
     }.toList
+  }
+
+  def delete(id: Long) = DB.withConnection { implicit connection =>
+    SQL("delete from templates where id = {id}").on("id" -> id).executeUpdate()
   }
 
 }

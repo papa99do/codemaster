@@ -25,7 +25,10 @@ object TemplateController extends Controller {
   def save(id: Option[Long]) = Action(parse.json) { request =>
     request.body.validate[(String, String, String, String)].map {
       case (name, tabTrigger, content, mode) => {
-        Templates.create(Template(0L, name, tabTrigger, content, mode))
+        id match {
+          case Some(idValue) => Templates.update(Template(idValue, name, tabTrigger, content, mode))
+          case None => Templates.create(Template(0L, name, tabTrigger, content, mode))
+        }
         Ok(Json.obj("status" -> "ok"))
       }
     }.recoverTotal {
@@ -36,6 +39,11 @@ object TemplateController extends Controller {
   def load(mode: String) = Action { request =>
     val after : Option[String] = request.getQueryString("lastLoadedOn")
     Ok(Json.toJson(Templates.searchByMode(mode, after)))
+  }
+
+  def delete(id: Long) = Action {
+    Templates.delete(id)
+    Ok(Json.obj("status" -> "ok"))
   }
 
 

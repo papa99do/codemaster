@@ -18,6 +18,7 @@ DELETE  /snippet/:id                controllers.SnippetController.delete(id: Lon
 # Template
 GET     /templates/:mode            controllers.TemplateController.load(mode: String)
 POST    /template                   controllers.TemplateController.save(id: Option[Long])
+DELETE  /template/:id               controllers.TemplateController.delete(id: Long)
 
 # ACE
 GET     /langmodes                  controllers.AceController.getAvailableLangModes

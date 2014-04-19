@@ -20,12 +20,15 @@ Version 0.2.0
 + Save new template
 + Load custom templates
 + Load custom templates after a certain date
-* Update template
++ Update custom template
++ Delete custom template
 * Emit event after loading default/custom template
 * Templates filtering while typing
 * Templates ordering
 * Refactoring: split page to different files
 * Refactoring: extract angular services
+* Bug: unregister overriding template should bring back the overridden one
+* Bug: custom template loading can happen before default one, causing unpredictable overriding
 
 Version 0.1.0
 + Save snippets
