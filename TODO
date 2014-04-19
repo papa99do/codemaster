@@ -1,6 +1,6 @@
 Version 0.5.0
 Tag support as a service!
-Authentication
+Authentication: user login/logout
 
 Version 0.4.0
 * Search auto-completion
@@ -11,15 +11,20 @@ Version 0.3.0
 * User manual as the default code snippet
 * Support full-text search for snippets and templates
 * Support keyboard shortcuts
+* Provide feature to customize the ace editor
 
 Version 0.2.0
 + Automatically set editor mode based on guessing language mode for snippets
 + Selectable language mode
-* Delete snippets
-* Support template
-* Provide feature to customize the ace editor
-* Server-side tests
-* Client-side tests
++ Delete snippets
+* Save new template
+* Update template
+* Load custom templates after a certain date
+* Emit event after loading default/custom template
+* Templates filtering while typing
+* Templates ordering
+* Refactoring: split page to different files
+* Refactoring: extract angular services
 
 Version 0.1.0
 + Save snippets
@@ -33,4 +38,4 @@ Version 0.1.0
 + UI improvement!
 + Create a new project on github: https://github.com/papa99do/codemaster
 + Deploy to Heroku: http://code-master.herokuapp.com/
-+ Setup domain name code.papa99do.com for code-master.herokuapp.com
++ Setup domain name code.papa99do.com/code.yihanzhao.com for code-master.herokuapp.com

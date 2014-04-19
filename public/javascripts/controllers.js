@@ -71,6 +71,10 @@ function MainCtrl($scope, $http, $timeout) {
         return _.find($scope.snippets, function(s){return s.id === $scope.selectedSnippetId;});
     };
 
+    $scope.newTemplate = function() {
+        $scope.template = {mode: $scope.langMode.selected};
+    }
+
     $scope.setLangMode = function (mode) {
         mode = mode || $scope.langMode.selected || 'text';
         $scope.editor.session.setMode('ace/mode/' + mode);
