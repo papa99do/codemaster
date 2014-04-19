@@ -1,7 +1,7 @@
-function MainCtrl($scope, $http, $timeout) {
+function MainCtrl($scope, $http, $timeout, $filter) {
 
     $scope.searchRequest = {};
-    $scope.langMode = {};
+    $scope.langMode = {templateRegistry: {}};
 
     initEditor();
 
@@ -76,8 +76,10 @@ function MainCtrl($scope, $http, $timeout) {
     }
 
     $scope.saveTemplate = function() {
-        var url = $scope.template.id ? '/template?id=' + $scope.template.id : '/template'
+        var url = $scope.template.id ? '/template?id=' + $scope.template.id : '/template';
+        var mode = $scope.template.mode;
         $http.post(url, $scope.template).success(function(data) {
+            loadCustomTemplates(mode);
             $('#save-template-modal').modal('hide');
             newAlert('success', 'Template saved successfully!');
         }).error(function(data) {
@@ -91,23 +93,37 @@ function MainCtrl($scope, $http, $timeout) {
         $scope.editor.session.setMode('ace/mode/' + mode);
         $scope.langMode.selected = mode;
 
-        $http.get('/templates/' + mode).success(function(data) {
-            if (data && data.length > 0 && $scope.snippetManager) {
+        if (!$scope.langMode.templateRegistry[mode]) {
+            loadCustomTemplates(mode);
+        }
+
+        // show system template (called snippet in ACE is automatically loaded)
+        if (mode !== 'text') {
+            populateSnippets(mode, 100);
+        }
+    };
+
+    function loadCustomTemplates(mode) {
+        if (!$scope.snippetManager) return; // editor's snippet manager not loaded
+
+        var lastLoadedOn = $scope.langMode.templateRegistry[mode];
+        var url = 'templates/' + mode +
+            (lastLoadedOn ? '?lastLoadedOn=' + formatDate(lastLoadedOn) : '');
+
+        $http.get(url).success(function(data) {
+            $scope.langMode.templateRegistry[mode] = new Date();
+
+            if (data && data.length > 0) {
+                console.log('templates loaded: ' + data.length);
                 $scope.snippetManager.register(data, mode);
                 populateSnippets(mode, 200);
             }
         });
+    }
 
-        if ($scope.snippetManager && mode !== 'text') {
-            if ($scope.snippetManager.snippetMap[mode]) {
-                console.log("Templates loaded for mode: ", mode);
-                $scope.templates = $scope.snippetManager.snippetMap[mode];
-            } else {
-                populateSnippets(mode, 100);
-            }
-        }
-
-    };
+    function formatDate(date) {
+        return $filter('date')(date, 'yyyyMMddHHmmss');
+    }
 
     function populateSnippets(mode, dueTime) {
         console.log("Retry loading templates for mode: ", mode, " in ", dueTime, " ms.");
@@ -139,9 +155,6 @@ function MainCtrl($scope, $http, $timeout) {
             });
 
             $scope.snippetManager = ace.require("ace/snippets").snippetManager;
-
-            //$scope.snippetManager.register([], 'java');
-
         });
 
         $scope.editor = editor;

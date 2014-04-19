@@ -33,8 +33,9 @@ object TemplateController extends Controller {
     }
   }
 
-  def load(mode: String) = Action {
-    Ok(Json.toJson(Templates.searchByMode(mode)))
+  def load(mode: String) = Action { request =>
+    val after : Option[String] = request.getQueryString("lastLoadedOn")
+    Ok(Json.toJson(Templates.searchByMode(mode, after)))
   }
 
 

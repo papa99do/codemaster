@@ -19,7 +19,7 @@ Version 0.2.0
 + Delete snippets
 + Save new template
 + Load custom templates
-* Load custom templates after a certain date
++ Load custom templates after a certain date
 * Update template
 * Emit event after loading default/custom template
 * Templates filtering while typing
