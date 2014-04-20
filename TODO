@@ -22,13 +22,16 @@ Version 0.2.0
 + Load custom templates after a certain date
 + Update custom template
 + Delete custom template
-* Emit event after loading default/custom template
++ Emit event after loading default/custom template, work this around by using polling
++ Bug: custom template loading can happen before default one, causing unpredictable overriding
++ Bug: unregister overriding template should bring back the overridden one
+* Bug: overriding by name (should by tabTrigger?)
+* Templates ordering: by name (should by tabTrigger?)
 * Templates filtering while typing
-* Templates ordering
 * Refactoring: split page to different files
 * Refactoring: extract angular services
-* Bug: unregister overriding template should bring back the overridden one
-* Bug: custom template loading can happen before default one, causing unpredictable overriding
+* Test: client side
+* Test: server side
 
 Version 0.1.0
 + Save snippets

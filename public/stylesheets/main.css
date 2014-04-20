@@ -1,7 +1,7 @@
 #editor {
     position: absolute;
     top: 50px;
-    right: 150px;
+    right: 200px;
     bottom: 0;
     left: 300px;
 }
@@ -20,7 +20,7 @@
     top: 50px;
     bottom: 0;
     right: 0;
-    width: 150px;
+    width: 200px;
     overflow: scroll;
 }
 

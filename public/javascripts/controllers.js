@@ -84,7 +84,11 @@ function MainCtrl($scope, $http, $timeout, $filter) {
     $scope.deleteTemplate = function(template) {
         $http.delete('/template/' + template.id).success(function(){
             $scope.snippetManager.unregister(template, template.mode);
-            populateSnippets(template.mode, 100);
+            var overriddenTemplate = $scope.langMode.templateRegistry[template.mode].overriddenMap[template.name];
+            if (overriddenTemplate) {
+                $scope.snippetManager.register(overriddenTemplate, template.mode);
+                delete $scope.langMode.templateRegistry[template.mode].overriddenMap[template.name];
+            }
         });
     };
 
@@ -106,46 +110,58 @@ function MainCtrl($scope, $http, $timeout, $filter) {
         $scope.editor.session.setMode('ace/mode/' + mode);
         $scope.langMode.selected = mode;
 
-        if (!$scope.langMode.templateRegistry[mode]) {
-            loadCustomTemplates(mode);
-        }
-
-        // show system template (called snippet in ACE is automatically loaded)
-        if (mode !== 'text') {
-            populateSnippets(mode, 100);
-        }
+        $scope.templates = null;
+        loadTemplates(mode, 100, 5);
     };
 
     function loadCustomTemplates(mode) {
-        if (!$scope.snippetManager) return; // editor's snippet manager not loaded
-
-        var lastLoadedOn = $scope.langMode.templateRegistry[mode];
-        var url = 'templates/' + mode +
-            (lastLoadedOn ? '?lastLoadedOn=' + formatDate(lastLoadedOn) : '');
+        var templateRegistry = $scope.langMode.templateRegistry;
+        var url = 'templates/' + mode;
+        if (templateRegistry[mode]) {
+            var lastLoadedOn = templateRegistry[mode].lastLoadedOn;
+            url += '?lastLoadedOn=' + $filter('date')(lastLoadedOn, 'yyyyMMddHHmmss');
+        }
 
         $http.get(url).success(function(data) {
-            $scope.langMode.templateRegistry[mode] = new Date();
+            templateRegistry[mode] = templateRegistry[mode] || {};
+            templateRegistry[mode].lastLoadedOn = new Date();
+            templateRegistry[mode].overriddenMap = templateRegistry[mode].overriddenMap || {};
 
             if (data && data.length > 0) {
                 console.log('templates loaded: ' + data.length);
+
+                _.each(data, function(template) {
+                    if ($scope.snippetManager.snippetNameMap[mode][template.name]) {
+                        templateRegistry[mode].overriddenMap[template.name] = $scope.snippetManager.snippetNameMap[mode][template.name];
+                    }
+                });
+
                 $scope.snippetManager.register(data, mode);
-                populateSnippets(mode, 200);
+                if (!$scope.templates) {
+                    $scope.templates = $scope.snippetManager.snippetMap[mode];
+                }
             }
         });
     }
 
-    function formatDate(date) {
-        return $filter('date')(date, 'yyyyMMddHHmmss');
-    }
+    function loadTemplates(mode, dueTime, retryTimes) {
+        if (!$scope.snippetManager || mode === 'text') return;
 
-    function populateSnippets(mode, dueTime) {
+        if ($scope.langMode.templateRegistry[mode]) {
+            $scope.templates = $scope.snippetManager.snippetMap[mode];
+            return;
+        }
+
         console.log("Retry loading templates for mode: ", mode, " in ", dueTime, " ms.");
         $timeout(function() {
             if ($scope.snippetManager.snippetMap[mode]) {
                 console.log("Templates loaded for mode: ", mode);
                 $scope.templates = $scope.snippetManager.snippetMap[mode];
+                loadCustomTemplates(mode);
+            } else if (retryTimes > 0) {
+                loadTemplates(mode, dueTime * 2, retryTimes - 1);
             } else {
-                populateSnippets(mode, dueTime * 2);
+                loadCustomTemplates(mode);
             }
         }, dueTime);
     }

@@ -156,7 +156,7 @@
 
 <div id="template-list">
     <ul class="list-group">
-        <li class="list-group-item" ng-repeat="template in templates">
+        <li class="list-group-item" ng-repeat="template in templates | orderBy:'name'" ng-if="template.tabTrigger">
             {{template.tabTrigger}}
             <button type="button" class="close" style="font-size:14px; padding: 3px;" ng-click="updateTemplate(template)"><i class="glyphicon glyphicon-pencil"></i></button>
             <button type="button" class="close" style="font-size:14px; padding: 3px;" ng-click="deleteTemplate(template)" ng-if="template.id"><i class="glyphicon glyphicon-remove"></i></button>
