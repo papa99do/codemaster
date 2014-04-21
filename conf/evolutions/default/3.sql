@@ -9,8 +9,6 @@ create table templates (
     last_updated_on timestamp
 );
 
-alter table templates add constraint unique_templates_name_mode unique (name, mode);
-
 # --- !Downs
 
 drop table if exists templates;
