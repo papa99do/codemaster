@@ -4,12 +4,14 @@ Version 0.5.0
 Version 0.4.0
 * Search auto-completion
 * Tag suggestion when saving snippet/template
+* Tag cloud
 * Search feature like angularJS doc site
 * Tag support as a service!
 
 Version 0.3.0
 * User manual as the default code snippet
 * Support full-text search for snippets
+* Support pagination
 * Support keyboard shortcuts
 * Provide feature to customize the ace editor?
 * Put editor on focus by default
