@@ -46,6 +46,4 @@ object TemplateController extends Controller {
     Ok(Json.obj("status" -> "ok"))
   }
 
-
-
 }

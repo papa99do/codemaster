@@ -26,8 +26,11 @@
 
 #template-list .list-group-item {
     padding: 3px 15px;
-    color: #31708f;
-    background-color: #d9edf7;
+}
+
+#template-list button.close {
+    font-size: 14px;
+    padding: 3px;
 }
 
 #alert-area {

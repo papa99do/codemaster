@@ -1,17 +1,18 @@
 Version 0.5.0
-Tag support as a service!
-Authentication: user login/logout
+* Authentication: user login/logout
 
 Version 0.4.0
 * Search auto-completion
 * Tag suggestion when saving snippet/template
 * Search feature like angularJS doc site
+* Tag support as a service!
 
 Version 0.3.0
 * User manual as the default code snippet
-* Support full-text search for snippets and templates
+* Support full-text search for snippets
 * Support keyboard shortcuts
-* Provide feature to customize the ace editor
+* Provide feature to customize the ace editor?
+* Put editor on focus by default
 
 Version 0.2.0
 + Automatically set editor mode based on guessing language mode for snippets
@@ -25,9 +26,9 @@ Version 0.2.0
 + Emit event after loading default/custom template, work this around by using polling
 + Bug: custom template loading can happen before default one, causing unpredictable overriding
 + Bug: unregister overriding template should bring back the overridden one
-* Bug: overriding by name (should by tabTrigger?)
-* Templates ordering: by name (should by tabTrigger?)
-* Templates filtering while typing
++ Bug: overriding by name (should by tabTrigger?)
++ Templates ordering: by name (should by tabTrigger?)
++ To solve the overriding bug and sort order problem, we make the tab trigger and name to be the same
 * Refactoring: split page to different files
 * Refactoring: extract angular services
 * Test: client side

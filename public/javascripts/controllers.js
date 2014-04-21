@@ -84,19 +84,26 @@ function MainCtrl($scope, $http, $timeout, $filter) {
     $scope.deleteTemplate = function(template) {
         $http.delete('/template/' + template.id).success(function(){
             $scope.snippetManager.unregister(template, template.mode);
-            var overriddenTemplate = $scope.langMode.templateRegistry[template.mode].overriddenMap[template.name];
-            if (overriddenTemplate) {
-                $scope.snippetManager.register(overriddenTemplate, template.mode);
-                delete $scope.langMode.templateRegistry[template.mode].overriddenMap[template.name];
-            }
+            checkUnmasked(template.mode);
         });
     };
+
+    function checkUnmasked(mode) {
+        _.each($scope.langMode.templateRegistry[mode].overriddenMap, function(template) {
+            if (!$scope.snippetManager.snippetNameMap[mode][template.name]) {
+                $scope.snippetManager.register(template, mode);
+                delete $scope.langMode.templateRegistry[mode].overriddenMap[template.name];
+            }
+        });
+    }
 
     $scope.saveTemplate = function() {
         var url = $scope.template.id ? '/template?id=' + $scope.template.id : '/template';
         var mode = $scope.template.mode;
+        $scope.template.name = $scope.template.tabTrigger;
         $http.post(url, $scope.template).success(function(data) {
             loadCustomTemplates(mode);
+            checkUnmasked(mode);
             $('#save-template-modal').modal('hide');
             newAlert('success', 'Template saved successfully!');
         }).error(function(data) {
