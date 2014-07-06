@@ -12,7 +12,8 @@ Version 0.4.0
 * Support pagination
 * Support keyboard shortcuts
 * Provide feature to customize the ace editor?
-* Put editor on focus by default
+* Enhance: Put editor on focus by default
+* Enhance: Remove snippet/template after confirmation
 * Refactoring: split page to different files
 * Refactoring: extract angular services
 * Test: client side
@@ -23,9 +24,11 @@ Version 0.3.0: Replace storage layer with mongoDB
 + Explicitly specify langMode when creating/updating snippets
 + Replace the implementation of template with mongoDB
 + Bug: $oid stripped by angular js: an angular js bug. work around: stringify it before passing to $http.post
-* Create multi-key index on tags
-* Create full-text index on title, description, configure weight
-* Deploy: Configure heroku to use mongoHQ
+* Create multi-key index on snippets.tags
+* Create full-text index on snippets.title, snippets.description, configure weight
+* Create unique constraint on templates.{name, mode}
+* Create index on templates.mode?
++ Deploy: Configure heroku to use mongoHQ, remove the configuration and evolution for postgreSQL
 
 Version 0.2.0
 + Automatically set editor mode based on guessing language mode for snippets
