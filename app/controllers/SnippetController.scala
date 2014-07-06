@@ -2,52 +2,47 @@ package controllers
 
 import play.api.mvc.{Action, Controller}
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
-import models.{Snippet, Snippets}
+import models.{Snippet}
+import play.modules.reactivemongo.MongoController
+import scala.concurrent.Future
+import play.api.Logger
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-object SnippetController extends Controller {
 
-  implicit val rds = (
-    (__ \ 'title).read[String] and
-    (__ \ 'description).readNullable[String] and
-    (__ \ 'tags).read[String] and
-    (__ \ 'code).read[String]
-  ).tupled
+object SnippetController extends Controller with MongoController {
 
-  implicit val snippetWrites : Writes[Snippet] = (
-    (__ \ 'id).write[Long] and
-    (__ \ 'title).write[String] and
-    (__ \ 'description).write[Option[String]] and
-    (__ \ 'tags).write[Seq[String]] and
-    (__ \ 'code).write[String] and
-    (__ \ 'langMode).write[String]
-  )(unlift(f = Snippet.unapply))
-
-  def save(id: Option[Long]) = Action(parse.json) { request =>
-    request.body.validate[(String, Option[String], String, String)].map {
-      case (title, description, tags, code) => {
-        id match {
-          case (Some(idValue)) => Snippets.update(Snippet(idValue, title, description, tags.split(" "), code))
-          case None => Snippets.create(Snippet(0L, title, description, tags.split(" "), code))
+  def save = Action.async(parse.json) { request =>
+    request.body.validate[Snippet].map { snippet =>
+        Snippet.save(snippet).map { lastError =>
+          Logger.debug(s"Successfully saved snippet with LastError: $lastError")
+          Ok(Json.obj("status" -> "ok"))
         }
-        Ok(Json.obj("status" -> "ok"))
-      }
     }.recoverTotal {
-      e => BadRequest("Detected error:"+ JsError.toFlatJson(e))
+      e => {
+        Logger.debug(s"Save snippet validation error: " + JsError.toFlatJson(e))
+        Future.successful(BadRequest("invalid json"))
+      }
     }
   }
 
-  def delete(id: Long) = Action {
-    Snippets.delete(id)
-    Ok(Json.obj("status" -> "ok"))
+  def delete(id: String) = Action.async {
+    Snippet.delete(id).map { lastError =>
+      Logger.debug(s"Successfully deleted snippet '$id' with LastError: $lastError")
+      Ok(Json.obj("status" -> "ok"))
+    }
+
   }
 
-  def search(tags: String) = Action {
-    Ok(Json.toJson(Snippets.search(tags)))
+  def search(query: String) = Action.async {
+    Snippet.searchByTags(query.split(" ")).map { snippets =>
+      Ok(Json.toJson(snippets))
+    }
   }
 
-  def viewCode(id: Long) = Action {
-    Ok(Snippets.getCode(id))
+  def viewCode(id: String) = Action.async {
+    Snippet.getCode(id).map { code =>
+      Ok(code)
+    }
   }
 
 }

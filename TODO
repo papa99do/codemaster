@@ -1,20 +1,31 @@
 Version 0.5.0
 * Authentication: user login/logout
-
-Version 0.4.0
 * Search auto-completion
 * Tag suggestion when saving snippet/template
 * Tag cloud
 * Search feature like angularJS doc site
 * Tag support as a service!
 
-Version 0.3.0
+Version 0.4.0
 * User manual as the default code snippet
 * Support full-text search for snippets
 * Support pagination
 * Support keyboard shortcuts
 * Provide feature to customize the ace editor?
 * Put editor on focus by default
+* Refactoring: split page to different files
+* Refactoring: extract angular services
+* Test: client side
+* Test: server side
+
+Version 0.3.0: Replace storage layer with mongoDB
++ Replace the implementation of snippet with mongoDB
++ Explicitly specify langMode when creating/updating snippets
++ Replace the implementation of template with mongoDB
++ Bug: $oid stripped by angular js: an angular js bug. work around: stringify it before passing to $http.post
+* Create multi-key index on tags
+* Create full-text index on title, description, configure weight
+* Deploy: Configure heroku to use mongoHQ
 
 Version 0.2.0
 + Automatically set editor mode based on guessing language mode for snippets
@@ -31,10 +42,6 @@ Version 0.2.0
 + Bug: overriding by name (should by tabTrigger?)
 + Templates ordering: by name (should by tabTrigger?)
 + To solve the overriding bug and sort order problem, we make the tab trigger and name to be the same
-* Refactoring: split page to different files
-* Refactoring: extract angular services
-* Test: client side
-* Test: server side
 
 Version 0.1.0
 + Save snippets

@@ -2,48 +2,40 @@ package controllers
 
 import play.api.mvc.{Action, Controller}
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
-import models.{Template, Templates}
+import models.Template
+import play.api.Logger
+import scala.concurrent.Future
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 object TemplateController extends Controller {
 
-  implicit val rds = (
-    (__ \ 'name).read[String] and
-    (__ \ 'tabTrigger).read[String] and
-    (__ \ 'content).read[String] and
-    (__ \ 'mode).read[String]
-  ).tupled
-
-  implicit val writes : Writes[Template] = (
-    (__ \ 'id).write[Long] and
-    (__ \ 'name).write[String] and
-    (__ \ 'tabTrigger).write[String] and
-    (__ \ 'content).write[String] and
-    (__ \ 'mode).write[String]
-  )(unlift(f = Template.unapply))
-
-  def save(id: Option[Long]) = Action(parse.json) { request =>
-    request.body.validate[(String, String, String, String)].map {
-      case (name, tabTrigger, content, mode) => {
-        id match {
-          case Some(idValue) => Templates.update(Template(idValue, name, tabTrigger, content, mode))
-          case None => Templates.create(Template(0L, name, tabTrigger, content, mode))
-        }
+  def save = Action.async(parse.json) { request =>
+    request.body.validate[Template].map { template =>
+      Template.save(template).map { lastError =>
+        Logger.debug(s"Successfully saved template with LastError: $lastError")
         Ok(Json.obj("status" -> "ok"))
       }
+
     }.recoverTotal {
-      e => BadRequest("Detected error:"+ JsError.toFlatJson(e))
+      e => {
+        Logger.debug(s"Save template validation error: " + JsError.toFlatJson(e))
+        Future.successful(BadRequest("invalid json"))
+      }
     }
   }
 
-  def load(mode: String) = Action { request =>
+  def load(mode: String) = Action.async { request =>
     val after : Option[String] = request.getQueryString("lastLoadedOn")
-    Ok(Json.toJson(Templates.searchByMode(mode, after)))
+    Template.searchByMode(mode).map { templates =>
+      Ok(Json.toJson(templates))
+    }
   }
 
-  def delete(id: Long) = Action {
-    Templates.delete(id)
-    Ok(Json.obj("status" -> "ok"))
+  def delete(id: String) = Action.async {
+    Template.delete(id).map { lastError =>
+      Logger.debug(s"Successfully deleted template '$id' with LastError: $lastError")
+      Ok(Json.obj("status" -> "ok"))
+    }
   }
 
 }

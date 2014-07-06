@@ -1,54 +1,35 @@
 package models
 
 import play.api.Play.current
-import play.api.db.DB
-import anorm._
+import play.modules.reactivemongo.ReactiveMongoPlugin
+import play.modules.reactivemongo.json.collection.JSONCollection
+import play.api.libs.json.{Format, Json}
+import reactivemongo.bson.BSONObjectID
+import scala.concurrent.Future
+import play.modules.reactivemongo.json.BSONFormats._
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 case class Template (
-  id: Long,
+  _id: Option[BSONObjectID],
   name: String,
   tabTrigger: String,
   content: String,
   mode: String
 )
 
-object Templates {
+object Template {
+  private def db = ReactiveMongoPlugin.db
+  def collection: JSONCollection = db[JSONCollection]("templates")
 
-  def create(template: Template) = DB.withConnection { implicit connection =>
-    SQL("insert into templates(name, tab_trigger, content, mode, last_updated_on) " +
-      "values ({name}, {tabTrigger}, {content}, {mode}, now())").on(
-        "name" -> template.name, "tabTrigger" ->  template.tabTrigger,
-        "content" -> template.content, "mode" -> template.mode
-      ).executeInsert()
-  }
+  implicit val format: Format[Template] = Json.format[Template]
 
-  def update(template: Template) = DB.withConnection { implicit connection =>
-    SQL("update templates set name = {name}, tab_trigger = {tabTrigger}, content = {content}, " +
-      "mode = {mode}, last_updated_on = now() where id = {id} ").on(
-        "name" -> template.name, "tabTrigger" ->  template.tabTrigger,
-        "content" -> template.content, "mode" -> template.mode, "id" -> template.id
-      ).executeUpdate()
-  }
+  def save(template: Template) =
+    collection.save(Json.toJson(template))
 
-  def searchByMode(mode: String, after: Option[String]) : List[Template] = DB.withConnection { implicit connection =>
-    val sql = after match {
-      case Some(date: String) =>
-        SQL("select id, name, tab_trigger, content, mode from templates where mode = {mode} " +
-          "and last_updated_on >= to_timestamp({date}, 'yyyyMMddHH24MISS')")
-          .on("mode" -> mode, "date" -> date)
-      case None =>
-        SQL("select id, name, tab_trigger, content, mode from templates where mode = {mode}")
-          .on("mode" -> mode)
-    }
+  def delete(id: String) =
+    collection.remove(Json.obj("_id" -> BSONObjectID(id)))
 
-    sql().map { row =>
-      Template(row[Long]("id"), row[String]("name"), row[String]("tab_trigger"),
-        row[String]("content"), row[String]("mode"))
-    }.toList
-  }
-
-  def delete(id: Long) = DB.withConnection { implicit connection =>
-    SQL("delete from templates where id = {id}").on("id" -> id).executeUpdate()
-  }
+  def searchByMode(mode: String): Future[List[Template]] =
+    collection.find(Json.obj("mode" -> mode)).cursor[Template].collect[List]()
 
 }

@@ -1,77 +1,37 @@
 package models
 
 import play.api.Play.current
-import play.api.db.DB
-import anorm._
+import reactivemongo.bson.BSONObjectID
+import play.api.libs.json.{Json, Format}
+import play.modules.reactivemongo.json.BSONFormats._
+import play.modules.reactivemongo.ReactiveMongoPlugin
+import scala.concurrent.Future
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.modules.reactivemongo.json.collection.JSONCollection
 
 case class Snippet (
-  id: Long,
+  _id: Option[BSONObjectID],
   title: String,
   description: Option[String],
-  tags: Seq[String] = Nil,
-  code: String = "",
-  langMode: String = ""
-)
+  tags: Seq[String],
+  langMode: String,
+  code: Option[String])
 
-object Snippets {
-  def create(snippet: Snippet) = DB.withTransaction { implicit connection =>
-    val snippetId : Option[Long] = SQL("insert into snippets(title, description, code) values({title}, {description}, {code})").on(
-      "title" -> snippet.title, "description" -> snippet.description, "code" -> snippet.code
-    ).executeInsert()
+object Snippet {
+  private def db = ReactiveMongoPlugin.db
+  def collection: JSONCollection = db[JSONCollection]("snippets")
 
-    Tags.createSnippetTags(snippet.tags, snippetId.get)
-  }
+  implicit val format: Format[Snippet] = Json.format[Snippet]
 
-  def update(snippet: Snippet) = DB.withTransaction { implicit connection =>
-    SQL("update snippets set title = {title}, description = {description}, code = {code} where id = {id}")
-      .on("title" -> snippet.title, "description" -> snippet.description, "code" -> snippet.code, "id" -> snippet.id)
-      .executeUpdate()
+  def searchByTags(tags: Seq[String]): Future[List[Snippet]] =
+    collection.find(Json.obj("tags" -> Json.obj("$all" -> tags)), Json.obj("code" -> 0))
+      .cursor[Snippet].collect[List]()
 
-    Tags.deleteSnippetTags(snippet.id)
-    Tags.createSnippetTags(snippet.tags, snippet.id)
-    Tags.deleteEmptyTags()
-  }
+  def getCode(id: String): Future[String] =
+    collection.find(Json.obj("_id" -> BSONObjectID(id)))
+      .cursor[Snippet].collect[List](upTo = 1).map{_(0).code.getOrElse("")}
 
-  def delete(id: Long) = DB.withTransaction { implicit connection =>
-    Tags.deleteSnippetTags(id)
-    SQL("delete from snippets where id = {id}").on("id" -> id).executeUpdate()
-    Tags.deleteEmptyTags()
-  }
+  def save(snippet: Snippet) = collection.save(Json.toJson(snippet))
 
-  def search(tags: String): List[Snippet] = DB.withConnection {
-    implicit connection =>
-
-    var ids : Set[Long] = null
-    tags.split(" ").foreach { tag =>
-      if (ids == null) {
-        ids = Tags.getSnippetIdsByTag(tag)
-      } else {
-        ids = ids & Tags.getSnippetIdsByTag(tag)
-      }
-    }
-
-    if (ids.isEmpty) return List()
-
-    val query = SQL( """
-      select s.id, s.title, s.description, string_agg(t.name, ',') tags
-      from snippets s, tags t, snippet_tags st
-      where s.id = st.snippet_id
-      and st.tag_id = t.id
-      and s.id in (%s)
-      group by s.id""".format(ids.mkString(",")))
-
-    query().map { row =>
-      val tags = row[String]("tags").split(",")
-      Snippet(id = row[Long]("id"),
-        title = row[String]("title"),
-        description = row[Option[String]]("description"),
-        tags = tags,
-        langMode = AceHelper.guessLangMode(tags))
-    }.toList
-
-  }
-
-  def getCode(id: Long): String = DB.withConnection { implicit connection =>
-    SQL("select code from snippets where id = {id}").on("id" -> id).as(SqlParser.scalar[String].single)
-  }
+  def delete(id: String) = collection.remove(Json.obj("_id" -> BSONObjectID(id)))
 }

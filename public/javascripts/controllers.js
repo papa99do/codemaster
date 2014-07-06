@@ -19,7 +19,7 @@ function MainCtrl($scope, $http, $timeout, $filter) {
         $http.get('/snippets/' + $scope.searchRequest.tag).success(function(data){
             if (data && data[0]) {
                 $scope.snippets = data;
-                $scope.select(data[0].id);
+                $scope.select(data[0]._id.$oid);
             } else {
                 $scope.setLangMode();
                 $scope.editor.setValue('');
@@ -36,8 +36,8 @@ function MainCtrl($scope, $http, $timeout, $filter) {
     };
 
     $scope.saveSnippet = function() {
-        var url = $scope.snippet.id ? '/snippet?id=' + $scope.snippet.id : '/snippet'
-        $http.post(url, $scope.snippet).success(function(data) {
+        $scope.snippet.tags = $scope.snippet.tags.split(' ');
+        $http.post('/snippet', JSON.stringify($scope.snippet)).success(function(data) {
             $('#save-snippet-modal').modal('hide');
             newAlert('success', 'Snippet saved successfully!');
         }).error(function(data) {
@@ -53,7 +53,10 @@ function MainCtrl($scope, $http, $timeout, $filter) {
     }
 
     $scope.newSnippet = function() {
-        $scope.snippet = {code : $scope.editor.getValue()};
+        $scope.snippet = {
+            code : $scope.editor.getValue(),
+            langMode : $scope.langMode.selected
+        };
     };
 
     $scope.updateSnippet = function() {
@@ -65,10 +68,11 @@ function MainCtrl($scope, $http, $timeout, $filter) {
             $scope.snippet = {};
         }
         $scope.snippet.code = $scope.editor.getValue();
+        $scope.snippet.langMode = $scope.langMode.selected;
     };
 
     $scope.selectedSnippet = function() {
-        return _.find($scope.snippets, function(s){return s.id === $scope.selectedSnippetId;});
+        return _.find($scope.snippets, function(s){return s._id.$oid === $scope.selectedSnippetId;});
     };
 
     $scope.newTemplate = function() {
@@ -82,7 +86,7 @@ function MainCtrl($scope, $http, $timeout, $filter) {
     };
 
     $scope.deleteTemplate = function(template) {
-        $http.delete('/template/' + template.id).success(function(){
+        $http.delete('/template/' + template._id.$oid).success(function(){
             $scope.snippetManager.unregister(template, template.mode);
             checkUnmasked(template.mode);
         });
@@ -98,10 +102,9 @@ function MainCtrl($scope, $http, $timeout, $filter) {
     }
 
     $scope.saveTemplate = function() {
-        var url = $scope.template.id ? '/template?id=' + $scope.template.id : '/template';
         var mode = $scope.template.mode;
         $scope.template.name = $scope.template.tabTrigger;
-        $http.post(url, $scope.template).success(function(data) {
+        $http.post('/template', $scope.template).success(function(data) {
             loadCustomTemplates(mode);
             checkUnmasked(mode);
             $('#save-template-modal').modal('hide');
@@ -139,7 +142,8 @@ function MainCtrl($scope, $http, $timeout, $filter) {
 
                 _.each(data, function(template) {
                     if ($scope.snippetManager.snippetNameMap[mode][template.name]) {
-                        templateRegistry[mode].overriddenMap[template.name] = $scope.snippetManager.snippetNameMap[mode][template.name];
+                        templateRegistry[mode].overriddenMap[template.name] =
+                            $scope.snippetManager.snippetNameMap[mode][template.name];
                     }
                 });
 

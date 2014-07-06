@@ -10,15 +10,15 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 GET     /webjars/*file              controllers.WebJarAssets.at(file)
 
 # Snippet
-GET     /snippets/:tags             controllers.SnippetController.search(tags: String)
-GET     /snippet/:id                controllers.SnippetController.viewCode(id: Long)
-POST    /snippet                    controllers.SnippetController.save(id: Option[Long])
-DELETE  /snippet/:id                controllers.SnippetController.delete(id: Long)
+POST    /snippet                    controllers.SnippetController.save
+GET     /snippets/:query            controllers.SnippetController.search(query: String)
+GET     /snippet/:id                controllers.SnippetController.viewCode(id: String)
+DELETE  /snippet/:id                controllers.SnippetController.delete(id: String)
 
 # Template
 GET     /templates/:mode            controllers.TemplateController.load(mode: String)
-POST    /template                   controllers.TemplateController.save(id: Option[Long])
-DELETE  /template/:id               controllers.TemplateController.delete(id: Long)
+POST    /template                   controllers.TemplateController.save
+DELETE  /template/:id               controllers.TemplateController.delete(id: String)
 
 # ACE
 GET     /langmodes                  controllers.AceController.getAvailableLangModes
